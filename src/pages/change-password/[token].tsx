@@ -11,7 +11,7 @@ import { createUrqlClient } from "../../utils/createUrqlClient";
 import { toErrorMap } from "../../utils/toErrorMap";
 import NextLink from "next/link";
 
-const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
+const ChangePassword: NextPage = () => {
   const router = useRouter();
   const [, changePassword] = useChangePasswordMutation();
   const [tokenError, setTokenError] = useState("");
@@ -22,7 +22,8 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
         onSubmit={async (values, { setErrors }) => {
           const response = await changePassword({
             newPassword: values.newPassword,
-            token,
+            token:
+              typeof router.query.token === "string" ? router.query.token : "",
           });
           if (response.data?.changePassword.errors) {
             const errorMap = toErrorMap(response.data.changePassword.errors);
@@ -46,7 +47,9 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
             />
             {tokenError ? (
               <Flex>
-                <Box color="red" mr={4}>{tokenError}</Box>
+                <Box color="red" mr={4}>
+                  {tokenError}
+                </Box>
                 <NextLink href="/forgot-password">
                   <Link>click here to get a new one</Link>
                 </NextLink>
@@ -68,11 +71,12 @@ const ChangePassword: NextPage<{ token: string }> = ({ token }) => {
   );
 };
 
-ChangePassword.getInitialProps = ({ query }) => {
-  return {
-    token: query.token as string,
-  };
-};
+// ChangePassword.getInitialProps = ({ query }) => {
+//   return {
+//     token: query.token as string,
+//   };
+// };
 // getServerProps is the same here as we are doing SSR
+// nextJs will make this page static and optimise it if you don't use initialProps. So, don't use it if you can.
 
 export default withUrqlClient(createUrqlClient)(ChangePassword);
