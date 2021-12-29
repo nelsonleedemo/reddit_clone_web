@@ -20,16 +20,12 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
   } else if (!data?.me) {
     body = (
       <>
-        <NextLink href="/login">
-          <Link color="white" mr={2}>
-            Login
-          </Link>
-        </NextLink>
-        <NextLink href="/register">
-          <Link color="white" mr={2}>
-            Register
-          </Link>
-        </NextLink>
+        <Link color="white" mr={2} href="/login">
+          Login
+        </Link>
+        <Link color="white" mr={2} href="/register">
+          Register
+        </Link>
       </>
     );
     // user is logged in
