@@ -1,6 +1,5 @@
 import { Box, Button, Flex, Link } from "@chakra-ui/react";
 import React from "react";
-import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 
@@ -11,6 +10,7 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
   });
+  // Stop querying me if SSR, becoz it will return null only
   let body = null;
 
   // console.log("data:", data)
