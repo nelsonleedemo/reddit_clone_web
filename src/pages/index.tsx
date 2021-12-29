@@ -1,6 +1,10 @@
 import { withUrqlClient } from "next-urql";
 import Layout from "../components/Layout";
-import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
+import {
+  useDeletePostMutation,
+  useMeQuery,
+  usePostsQuery,
+} from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import {
   Box,
@@ -15,13 +19,15 @@ import {
 import { useState } from "react";
 import UpdootSection from "../components/UpdootSection";
 import NextLink from "next/link";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
     limit: 15,
     cursor: null as null | string,
   });
+
+  const [{ data: meData }] = useMeQuery();
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
@@ -62,14 +68,30 @@ const Index = () => {
                     <Text flex={1} mt={4} mr="auto">
                       {p.textSnippet}
                     </Text>
-                    <IconButton
-                      colorScheme="red"
-                      aria-label="Delete Post"
-                      icon={<DeleteIcon />}
-                      onClick={() => {
-                        deletePost({ id: p.id });
-                      }}
-                    />
+
+                    {meData?.me?.id !== p.creator.id ? null : (
+                      <Box>
+                        <NextLink
+                          href="/post/edit/[id]"
+                          as={`/post/edit/${p.id}`}
+                        >
+                          <IconButton
+                            mr={4}
+                            colorScheme="gray"
+                            aria-label="Edit Post"
+                            icon={<EditIcon />}
+                          />
+                        </NextLink>
+                        <IconButton
+                          colorScheme="red"
+                          aria-label="Delete Post"
+                          icon={<DeleteIcon />}
+                          onClick={() => {
+                            deletePost({ id: p.id });
+                          }}
+                        />
+                      </Box>
+                    )}
                   </Flex>
                   {/* getting textSnippet that are resolved and handled by backend */}
                 </Box>
