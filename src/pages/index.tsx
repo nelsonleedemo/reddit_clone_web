@@ -1,6 +1,6 @@
 import { withUrqlClient } from "next-urql";
 import Layout from "../components/Layout";
-import { useMeQuery, usePostsQuery } from "../generated/graphql";
+import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import {
   Box,
@@ -22,7 +22,6 @@ const Index = () => {
     cursor: null as null | string,
   });
 
-  const [{ data: meData }] = useMeQuery();
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
@@ -63,9 +62,7 @@ const Index = () => {
                       {p.textSnippet}
                     </Text>
 
-                    {meData?.me?.id !== p.creator.id ? null : (
-                      <EditDeletePostButtons id={p.id} />
-                    )}
+                    <EditDeletePostButtons postId={p.id} creatorId={p.creator.id} />
                   </Flex>
                   {/* getting textSnippet that are resolved and handled by backend */}
                 </Box>
