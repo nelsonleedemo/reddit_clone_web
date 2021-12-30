@@ -22,12 +22,17 @@ const Index = () => {
     cursor: null as null | string,
   });
 
-  const [{ data, fetching }] = usePostsQuery({
+  const [{ data, error, fetching }] = usePostsQuery({
     variables,
   });
 
   if (!fetching && !data) {
-    return <div>you get query failed for some reason</div>;
+    return (
+      <div>
+        <div>you get query failed for some reason</div>
+        <div>{error?.message}</div>
+      </div>
+    );
   }
 
   return (
@@ -62,7 +67,10 @@ const Index = () => {
                       {p.textSnippet}
                     </Text>
 
-                    <EditDeletePostButtons postId={p.id} creatorId={p.creator.id} />
+                    <EditDeletePostButtons
+                      postId={p.id}
+                      creatorId={p.creator.id}
+                    />
                   </Flex>
                   {/* getting textSnippet that are resolved and handled by backend */}
                 </Box>

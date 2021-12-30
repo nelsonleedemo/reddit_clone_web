@@ -3,10 +3,12 @@ import React from "react";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
 
 interface NavBarProps {}
 
 const NavBar: React.FC<NavBarProps> = ({}) => {
+  const router = useRouter();
   const [{ fetching: logoutFetching }, logout] = useLogoutMutation();
   const [{ data, fetching }] = useMeQuery({
     pause: isServer(),
@@ -20,18 +22,16 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
     // user not logged in
   } else if (!data?.me) {
     body = (
-      <>
+      <Flex align="center">
         <NextLink href="/login">
-          <Link color="white" mr={2}>
+          <Link color="white" mr={4}>
             Login
           </Link>
         </NextLink>
         <NextLink href="/register">
-          <Link color="white" mr={2}>
-            Register
-          </Link>
+          <Link color="white">Register</Link>
         </NextLink>
-      </>
+      </Flex>
     );
     // user is logged in
   } else {
@@ -46,8 +46,9 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
         <Box mr={4}>{data.me.username}</Box>
 
         <Button
-          onClick={() => {
-            logout();
+          onClick={async () => {
+            await logout();
+            router.reload();
           }}
           isLoading={logoutFetching}
           variant="link"
@@ -66,7 +67,9 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
             <Heading>RedditClone</Heading>
           </Link>
         </NextLink>
-        <Box ml={"auto"}>{body}</Box>
+        <Flex ml={"auto"} align="center">
+          {body}
+        </Flex>
       </Flex>
     </Flex>
   );
