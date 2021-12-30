@@ -1,17 +1,12 @@
 import { withUrqlClient } from "next-urql";
 import Layout from "../components/Layout";
-import {
-  useDeletePostMutation,
-  useMeQuery,
-  usePostsQuery,
-} from "../generated/graphql";
+import { useMeQuery, usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import {
   Box,
   Button,
   Flex,
   Heading,
-  IconButton,
   Link,
   Stack,
   Text,
@@ -19,7 +14,7 @@ import {
 import { useState } from "react";
 import UpdootSection from "../components/UpdootSection";
 import NextLink from "next/link";
-import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
+import EditDeletePostButtons from "../components/EditDeletePostButtons";
 
 const Index = () => {
   const [variables, setVariables] = useState({
@@ -31,7 +26,6 @@ const Index = () => {
   const [{ data, fetching }] = usePostsQuery({
     variables,
   });
-  const [, deletePost] = useDeletePostMutation();
 
   if (!fetching && !data) {
     return <div>you get query failed for some reason</div>;
@@ -70,27 +64,7 @@ const Index = () => {
                     </Text>
 
                     {meData?.me?.id !== p.creator.id ? null : (
-                      <Box>
-                        <NextLink
-                          href="/post/edit/[id]"
-                          as={`/post/edit/${p.id}`}
-                        >
-                          <IconButton
-                            mr={4}
-                            colorScheme="gray"
-                            aria-label="Edit Post"
-                            icon={<EditIcon />}
-                          />
-                        </NextLink>
-                        <IconButton
-                          colorScheme="red"
-                          aria-label="Delete Post"
-                          icon={<DeleteIcon />}
-                          onClick={() => {
-                            deletePost({ id: p.id });
-                          }}
-                        />
-                      </Box>
+                      <EditDeletePostButtons id={p.id} />
                     )}
                   </Flex>
                   {/* getting textSnippet that are resolved and handled by backend */}
