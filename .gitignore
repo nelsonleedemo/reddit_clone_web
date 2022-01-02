@@ -25,7 +25,8 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env.local
+# .env.local
+# should ignore it in general, for visualisation on git only
 .env.development.local
 .env.test.local
 .env.production.local

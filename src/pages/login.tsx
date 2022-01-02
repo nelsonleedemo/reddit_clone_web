@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import NextLink from "next/link";
+
 const Login: React.FC<{}> = ({}) => {
   const [, login] = useLoginMutation();
   const router = useRouter();
